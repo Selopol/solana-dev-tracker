@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Solana Developer Tracker",
+  "version": "1.0.0",
+  "description": "Track Solana token developer reputation directly in Padre trading terminal",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://trade.padre.gg/*",
+    "https://*.railway.app/*",
+    "https://mainnet.helius-rpc.com/*"
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "assets/icon16.png",
+      "48": "assets/icon48.png",
+      "128": "assets/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "background": {
+    "service_worker": "scripts/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://trade.padre.gg/*"],
+      "js": ["scripts/content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}
