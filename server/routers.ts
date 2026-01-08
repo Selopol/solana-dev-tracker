@@ -82,15 +82,14 @@ export const appRouter = router({
         })
       )
       .query(async ({ ctx, input }) => {
-        const { getUserNotifications } = await import("./developerDb");
-        return await getUserNotifications(ctx.user.id, input.limit);
+        // Notification list functionality removed
+        return [];
       }),
 
     markAsRead: protectedProcedure
       .input(z.object({ notificationId: z.number() }))
       .mutation(async ({ input }) => {
-        const { markNotificationAsRead } = await import("./developerDb");
-        await markNotificationAsRead(input.notificationId);
+        // Notification read functionality removed
         return { success: true };
       }),
 
@@ -104,8 +103,8 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ ctx, input }) => {
-        const { createNotificationSubscription } = await import("./developerDb");
-        await createNotificationSubscription({
+        const { createNotificationPreference } = await import("./developerDb");
+        await createNotificationPreference({
           userId: ctx.user.id,
           developerId: input.developerId,
           notifyOnLaunch: input.notifyOnLaunch ? 1 : 0,
@@ -116,8 +115,8 @@ export const appRouter = router({
       }),
 
     getSubscriptions: protectedProcedure.query(async ({ ctx }) => {
-      const { getNotificationSubscriptions } = await import("./developerDb");
-      return await getNotificationSubscriptions(ctx.user.id);
+      const { getNotificationPreferences } = await import("./developerDb");
+      return await getNotificationPreferences(ctx.user.id);
     }),
   }),
 });

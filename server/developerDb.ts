@@ -6,15 +6,13 @@ import {
   tokens,
   migrationEvents,
   twitterLinkages,
-  notificationSubscriptions,
-  notifications,
+  notificationPreferences,
   InsertDeveloper,
   InsertWalletAssociation,
   InsertToken,
   InsertMigrationEvent,
   InsertTwitterLinkage,
-  InsertNotificationSubscription,
-  InsertNotification,
+  InsertNotificationPreference,
 } from "../drizzle/schema";
 
 /**
@@ -131,7 +129,7 @@ export async function getTokensByDeveloper(developerId: number) {
     .select()
     .from(tokens)
     .where(eq(tokens.developerId, developerId))
-    .orderBy(desc(tokens.launchDate));
+    .orderBy(desc(tokens.launchedAt));
 }
 
 export async function getTokenByAddress(tokenAddress: string) {
@@ -186,7 +184,7 @@ export async function getMigrationEventsByToken(tokenId: number) {
     .select()
     .from(migrationEvents)
     .where(eq(migrationEvents.tokenId, tokenId))
-    .orderBy(desc(migrationEvents.migrationDate));
+    .orderBy(desc(migrationEvents.migratedAt));
 }
 
 /**
@@ -215,52 +213,22 @@ export async function getTwitterLinkagesByDeveloper(developerId: number) {
  * Notification Operations
  */
 
-export async function createNotificationSubscription(data: InsertNotificationSubscription) {
+export async function createNotificationPreference(data: InsertNotificationPreference) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   
-  const result = await db.insert(notificationSubscriptions).values(data);
+  const result = await db.insert(notificationPreferences).values(data);
   return result;
 }
 
-export async function getNotificationSubscriptions(userId: number) {
+export async function getNotificationPreferences(userId: number) {
   const db = await getDb();
   if (!db) return [];
   
   return await db
     .select()
-    .from(notificationSubscriptions)
-    .where(eq(notificationSubscriptions.userId, userId));
-}
-
-export async function createNotification(data: InsertNotification) {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  
-  const result = await db.insert(notifications).values(data);
-  return result;
-}
-
-export async function getUserNotifications(userId: number, limit: number = 50) {
-  const db = await getDb();
-  if (!db) return [];
-  
-  return await db
-    .select()
-    .from(notifications)
-    .where(eq(notifications.userId, userId))
-    .orderBy(desc(notifications.createdAt))
-    .limit(limit);
-}
-
-export async function markNotificationAsRead(notificationId: number) {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  
-  await db
-    .update(notifications)
-    .set({ isRead: 1 })
-    .where(eq(notifications.id, notificationId));
+    .from(notificationPreferences)
+    .where(eq(notificationPreferences.userId, userId));
 }
 
 /**

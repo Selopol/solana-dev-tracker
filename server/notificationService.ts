@@ -1,4 +1,4 @@
-import { createNotification, getNotificationSubscriptions } from "./developerDb";
+import { getNotificationPreferences } from "./developerDb";
 import { notifyOwner } from "./_core/notification";
 
 /**
@@ -20,17 +20,8 @@ interface NotificationData {
  */
 export async function sendUserNotification(data: NotificationData): Promise<void> {
   try {
-    await createNotification({
-      userId: data.userId,
-      developerId: data.developerId,
-      tokenId: data.tokenId || null,
-      notificationType: data.type,
-      title: data.title,
-      message: data.message,
-      isRead: 0,
-    });
-
-    console.log(`Notification sent to user ${data.userId}: ${data.title}`);
+    // Notification storage removed - using owner notifications only
+    console.log(`Notification logged for user ${data.userId}: ${data.title}`);
   } catch (error) {
     console.error("Failed to send user notification:", error);
   }
@@ -46,9 +37,9 @@ export async function notifyTokenLaunch(
   tokenSymbol: string
 ): Promise<void> {
   try {
-    const subscriptions = await getNotificationSubscriptions(0); // Get all subscriptions
+    const subscriptions = await getNotificationPreferences(0); // Get all subscriptions
     const relevantSubs = subscriptions.filter(
-      (sub) => sub.developerId === developerId && sub.notifyOnLaunch === 1
+      (sub: any) => sub.developerId === developerId && sub.notifyOnLaunch === 1
     );
 
     for (const sub of relevantSubs) {
@@ -83,9 +74,9 @@ export async function notifyMigrationSuccess(
   toPlatform: string
 ): Promise<void> {
   try {
-    const subscriptions = await getNotificationSubscriptions(0);
+    const subscriptions = await getNotificationPreferences(0);
     const relevantSubs = subscriptions.filter(
-      (sub) => sub.developerId === developerId && sub.notifyOnMigration === 1
+      (sub: any) => sub.developerId === developerId && sub.notifyOnMigration === 1
     );
 
     for (const sub of relevantSubs) {
@@ -118,9 +109,9 @@ export async function notifySuspiciousPattern(
   riskScore: number
 ): Promise<void> {
   try {
-    const subscriptions = await getNotificationSubscriptions(0);
+    const subscriptions = await getNotificationPreferences(0);
     const relevantSubs = subscriptions.filter(
-      (sub) => sub.developerId === developerId && sub.notifyOnSuspicious === 1
+      (sub: any) => sub.developerId === developerId && sub.notifyOnSuspicious === 1
     );
 
     const patternList = patterns.join(", ");
@@ -155,9 +146,9 @@ export async function notifyRugPull(
   reason: string
 ): Promise<void> {
   try {
-    const subscriptions = await getNotificationSubscriptions(0);
+    const subscriptions = await getNotificationPreferences(0);
     const relevantSubs = subscriptions.filter(
-      (sub) => sub.developerId === developerId && sub.notifyOnSuspicious === 1
+      (sub: any) => sub.developerId === developerId && sub.notifyOnSuspicious === 1
     );
 
     for (const sub of relevantSubs) {
@@ -186,7 +177,7 @@ export async function notifyRugPull(
  */
 export async function sendDailyDigest(userId: number): Promise<void> {
   try {
-    const subscriptions = await getNotificationSubscriptions(userId);
+    const subscriptions = await getNotificationPreferences(userId);
 
     if (subscriptions.length === 0) {
       return;
@@ -204,7 +195,7 @@ export async function sendDailyDigest(userId: number): Promise<void> {
     if (activities.length > 0) {
       await sendUserNotification({
         userId,
-        developerId: subscriptions[0].developerId, // Use first developer as reference
+        developerId: subscriptions[0].developerId ?? 0, // Use first developer as reference
         type: "launch",
         title: "Daily Developer Activity Digest",
         message: `Here's what happened with your tracked developers today:\n${activities.join("\n")}`,

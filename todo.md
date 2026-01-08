@@ -100,3 +100,10 @@
 - [ ] Test extension on Padre terminal
 - [x] Update README for Padre-only setup
 - [x] Update extension installation guide
+
+## PostgreSQL Migration for Railway
+- [x] Update package.json with PostgreSQL driver
+- [x] Update Drizzle config for PostgreSQL
+- [x] Convert MySQL schema to PostgreSQL schema
+- [x] Test database connection
+- [x] Run migrations on Railway

@@ -195,8 +195,7 @@ export async function associateWalletWithDeveloper(
   await addWalletAssociation({
     developerId,
     walletAddress,
-    confidenceScore: confidence,
-    associationMethod: method,
+    confidence,
   });
 }
 
