@@ -75,11 +75,12 @@ async function startServer() {
         }
       }, 5000);
       
-      // Start monitoring schedule
+      // Load historical data and start continuous monitoring
       setTimeout(async () => {
         try {
-          const { startMonitoringSchedule } = await import('../notificationService.js');
-          startMonitoringSchedule();
+          const { loadHistoricalData, startContinuousMonitoring } = await import('../continuousMonitor.js');
+          await loadHistoricalData();
+          startContinuousMonitoring();
         } catch (error) {
           console.error('[Server] Failed to start monitoring:', error);
         }
