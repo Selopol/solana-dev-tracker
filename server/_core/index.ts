@@ -78,11 +78,14 @@ async function startServer() {
       // Load historical data and start continuous monitoring
       setTimeout(async () => {
         try {
-          const { loadHistoricalData, startContinuousMonitoring } = await import('../dataCollector.js');
-          console.log('[Server] Loading historical migrations from last 30 days...');
-          await loadHistoricalData();
-          console.log('[Server] Starting continuous monitoring (every 10 seconds)...');
-          startContinuousMonitoring();
+          // Use new V2 collector with Moralis + PumpPortal + Helius
+          const { loadHistoricalGraduatedTokens, startRealTimeMonitoring } = await import('../dataCollectorV2.js');
+          
+          console.log('[Server] Loading historical graduated tokens from Moralis...');
+          await loadHistoricalGraduatedTokens(200); // Load last 200 graduated tokens
+          
+          console.log('[Server] Starting real-time monitoring with PumpPortal...');
+          await startRealTimeMonitoring();
         } catch (error) {
           console.error('[Server] Failed to start monitoring:', error);
         }

@@ -293,3 +293,127 @@ export async function getWalletTokens(wallet: string): Promise<string[]> {
     return [];
   }
 }
+
+
+/**
+ * Get asset info using Helius DAS API (includes creator/authority)
+ */
+export async function getAsset(mint: string): Promise<any> {
+  try {
+    const response = await fetch(HELIUS_RPC_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'getAsset',
+        params: { id: mint }
+      })
+    });
+
+    const data = await response.json();
+    
+    if (data.error) {
+      console.error('[Helius] getAsset error:', data.error);
+      return null;
+    }
+
+    return data.result || null;
+  } catch (error) {
+    console.error('[Helius] Error fetching asset:', error);
+    return null;
+  }
+}
+
+/**
+ * Get token creator from asset data
+ * Returns the update authority or first creator address
+ */
+export async function getTokenCreator(mint: string): Promise<string | null> {
+  try {
+    const asset = await getAsset(mint);
+    
+    if (!asset) {
+      return null;
+    }
+
+    // Try to get creator from authorities
+    if (asset.authorities && asset.authorities.length > 0) {
+      // Look for update authority
+      const updateAuth = asset.authorities.find((a: any) => 
+        a.scopes?.includes('metadata') || a.scopes?.includes('full')
+      );
+      if (updateAuth?.address) {
+        return updateAuth.address;
+      }
+      // Fall back to first authority
+      return asset.authorities[0]?.address || null;
+    }
+
+    // Try to get from creators array
+    if (asset.creators && asset.creators.length > 0) {
+      // Return first verified creator or first creator
+      const verifiedCreator = asset.creators.find((c: any) => c.verified);
+      if (verifiedCreator?.address) {
+        return verifiedCreator.address;
+      }
+      return asset.creators[0]?.address || null;
+    }
+
+    // Try ownership
+    if (asset.ownership?.owner) {
+      return asset.ownership.owner;
+    }
+
+    return null;
+  } catch (error) {
+    console.error('[Helius] Error getting token creator:', error);
+    return null;
+  }
+}
+
+/**
+ * Get multiple assets in batch
+ */
+export async function getAssetBatch(mints: string[]): Promise<Map<string, any>> {
+  const results = new Map<string, any>();
+  
+  // Process in batches of 100
+  const batchSize = 100;
+  
+  for (let i = 0; i < mints.length; i += batchSize) {
+    const batch = mints.slice(i, i + batchSize);
+    
+    try {
+      const response = await fetch(HELIUS_RPC_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'getAssetBatch',
+          params: { ids: batch }
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.result && Array.isArray(data.result)) {
+        for (const asset of data.result) {
+          if (asset?.id) {
+            results.set(asset.id, asset);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('[Helius] Error fetching asset batch:', error);
+    }
+    
+    // Rate limiting
+    if (i + batchSize < mints.length) {
+      await new Promise(resolve => setTimeout(resolve, 200));
+    }
+  }
+  
+  return results;
+}
