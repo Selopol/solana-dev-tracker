@@ -1,11 +1,12 @@
 import axios from "axios";
+import { ENV } from "./_core/env";
 
 /**
  * Solana RPC Service for tracking developer wallets and token launches
  * Uses Helius RPC endpoint for enhanced Solana data access
  */
 
-const HELIUS_RPC_URL = "https://mainnet.helius-rpc.com/?api-key=14649a76-7c70-443c-b6da-41cffe2543fd";
+const HELIUS_RPC_URL = ENV.heliusRpcUrl;
 
 // Pump.fun program ID (example - needs to be verified)
 const PUMP_FUN_PROGRAM_ID = "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P";

@@ -113,3 +113,9 @@
 - [x] Update environment variable defaults
 - [x] Add Railway-specific configuration
 - [ ] Test deployment on Railway
+
+## Embed Default Environment Variables
+- [x] Add default values for all API keys and secrets
+- [x] Update env.ts with hardcoded defaults
+- [x] Update service files to use defaults
+- [x] Test that only DATABASE_URL is required

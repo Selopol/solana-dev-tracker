@@ -1,11 +1,12 @@
 import axios from "axios";
+import { ENV } from "./_core/env";
 
 /**
  * Twitter API Service for linking developer social presence
  * Uses Twitter API v2 to resolve accounts and communities
  */
 
-const TWITTER_API_KEY = "new1_defb379335c44d58890c0e2c59ada78f";
+const TWITTER_API_KEY = ENV.twitterApiKey;
 const TWITTER_API_BASE_URL = "https://api.twitter.com/2";
 
 interface TwitterUser {

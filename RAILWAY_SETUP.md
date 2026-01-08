@@ -1,5 +1,15 @@
 # Railway Deployment Guide
 
+## ✨ One-Step Setup
+
+All API keys and secrets are already embedded in the code with default values!
+
+### You Only Need to Add:
+
+**1. DATABASE_URL** (automatically set by Railway)
+
+That's it! 🎉
+
 ## Quick Setup
 
 ### 1. Add PostgreSQL Database
@@ -8,19 +18,9 @@ In Railway dashboard:
 - Click "New" → "Database" → "Add PostgreSQL"
 - Railway will automatically create `DATABASE_URL` variable
 
-### 2. Add Environment Variables
+### 2. Deploy
 
-Go to your service → Variables tab and add:
-
-```
-HELIUS_RPC_URL=https://mainnet.helius-rpc.com/?api-key=14649a76-7c70-443c-b6da-41cffe2543fd
-TWITTER_API_KEY=new1_defb379335c44d58890c0e2c59ada78f
-JWT_SECRET=<generate-random-32-char-string>
-OAUTH_SERVER_URL=https://api.manus.im
-OWNER_OPEN_ID=default-owner
-OWNER_NAME=Admin
-VITE_APP_ID=solana-dev-tracker
-```
+Railway will automatically deploy from your GitHub repository.
 
 ### 3. Run Database Migration
 
@@ -47,33 +47,40 @@ Edit these files in your Chrome extension:
 
 Replace `API_BASE_URL` with your Railway URL.
 
-## Generate JWT_SECRET
+## Default Values (Already Embedded)
 
-Use one of these methods:
+The following are already configured with default values:
 
-**Online:**
-- https://generate-secret.vercel.app/32
-
-**Terminal:**
-```bash
-openssl rand -base64 32
+```
+✅ HELIUS_RPC_URL=https://mainnet.helius-rpc.com/?api-key=14649a76-7c70-443c-b6da-41cffe2543fd
+✅ TWITTER_API_KEY=new1_defb379335c44d58890c0e2c59ada78f
+✅ JWT_SECRET=default-jwt-secret-change-in-production-min-32-chars
+✅ OAUTH_SERVER_URL=https://api.manus.im
+✅ OWNER_OPEN_ID=default-owner
+✅ VITE_APP_ID=solana-dev-tracker
 ```
 
-**Or any random string 32+ characters**
+## Optional: Override Defaults
+
+If you want to use different API keys, you can override them by adding environment variables in Railway:
+
+- `HELIUS_RPC_URL` - Your own Helius RPC endpoint
+- `TWITTER_API_KEY` - Your own Twitter API key
+- `JWT_SECRET` - Your own JWT secret (recommended for production)
 
 ## Troubleshooting
 
-### OAuth Errors
-If you see OAuth errors in logs, it's normal - the API endpoints work without OAuth for the Chrome extension.
-
 ### Database Connection Issues
-Make sure `DATABASE_URL` is set correctly. Railway should auto-inject this when you add PostgreSQL.
+Make sure PostgreSQL is added and `DATABASE_URL` is automatically injected.
 
 ### Migration Fails
 Try running migrations manually:
 ```bash
 railway run pnpm db:push
 ```
+
+### OAuth Warnings in Logs
+These are normal and can be ignored - the API works without OAuth for the Chrome extension.
 
 ## API Endpoints
 
@@ -88,3 +95,11 @@ Check logs in Railway dashboard to see:
 - Database connections
 - API requests
 - Background jobs (Solana monitoring, Twitter sync)
+
+## Next Steps
+
+After deployment:
+1. Copy your Railway URL
+2. Update Chrome extension API URLs
+3. Load extension in Chrome
+4. Open Padre terminal and test!
