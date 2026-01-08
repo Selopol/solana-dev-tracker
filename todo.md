@@ -119,3 +119,21 @@
 - [x] Update env.ts with hardcoded defaults
 - [x] Update service files to use defaults
 - [x] Test that only DATABASE_URL is required
+
+## Fix Chrome Extension Installation
+- [x] Check manifest.json for errors
+- [x] Verify all required files exist
+- [x] Fix file paths and structure
+- [x] Test extension loading in Chrome
+- [x] Create working extension package
+
+## Update Extension with Railway URL
+- [x] Update content.js with production URL
+- [x] Update popup.js with production URL
+- [x] Create final extension package
+
+## Automatic Database Migration
+- [x] Add migration script to run on server startup
+- [x] Update package.json start script
+- [x] Test auto-migration
+- [ ] Push to GitHub
