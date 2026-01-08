@@ -57,8 +57,34 @@ async function startServer() {
     console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
   }
 
-  server.listen(port, () => {
+  server.listen(port, async () => {
     console.log(`Server running on http://localhost:${port}/`);
+    
+    // Start background data collection
+    if (process.env.NODE_ENV === 'production') {
+      console.log('[Server] Starting background data collection...');
+      
+      // Run initial seeding after 5 seconds
+      setTimeout(async () => {
+        try {
+          const { execSync } = await import('child_process');
+          console.log('[Server] Running initial data seed...');
+          execSync('node scripts/seed-data.mjs', { stdio: 'inherit', cwd: process.cwd() });
+        } catch (error) {
+          console.error('[Server] Initial seed failed:', error);
+        }
+      }, 5000);
+      
+      // Start monitoring schedule
+      setTimeout(async () => {
+        try {
+          const { startMonitoringSchedule } = await import('../notificationService.js');
+          startMonitoringSchedule();
+        } catch (error) {
+          console.error('[Server] Failed to start monitoring:', error);
+        }
+      }, 10000);
+    }
   });
 }
 
