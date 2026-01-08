@@ -86,3 +86,17 @@
 - [x] Test Chrome extension functionality
 - [x] Test notification delivery
 - [x] Perform end-to-end testing
+
+
+## Refactoring for Padre Integration
+- [x] Remove web dashboard frontend pages
+- [x] Remove unused frontend routes and components
+- [x] Keep only backend API endpoints
+- [x] Analyze Padre terminal UI structure
+- [x] Redesign extension popup for Padre context
+- [x] Create content script to inject UI into Padre terminal
+- [x] Update manifest.json for Padre-specific permissions
+- [x] Add Padre URL to host permissions
+- [ ] Test extension on Padre terminal
+- [x] Update README for Padre-only setup
+- [x] Update extension installation guide
