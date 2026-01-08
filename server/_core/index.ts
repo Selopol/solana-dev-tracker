@@ -78,8 +78,10 @@ async function startServer() {
       // Load historical data and start continuous monitoring
       setTimeout(async () => {
         try {
-          const { loadHistoricalData, startContinuousMonitoring } = await import('../continuousMonitor.js');
+          const { loadHistoricalData, startContinuousMonitoring } = await import('../dataCollector.js');
+          console.log('[Server] Loading historical migrations from last 30 days...');
           await loadHistoricalData();
+          console.log('[Server] Starting continuous monitoring (every 10 seconds)...');
           startContinuousMonitoring();
         } catch (error) {
           console.error('[Server] Failed to start monitoring:', error);
