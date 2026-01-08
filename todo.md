@@ -107,3 +107,9 @@
 - [x] Convert MySQL schema to PostgreSQL schema
 - [x] Test database connection
 - [x] Run migrations on Railway
+
+## Railway Deployment Fixes
+- [x] Make OAuth optional for API-only usage
+- [x] Update environment variable defaults
+- [x] Add Railway-specific configuration
+- [ ] Test deployment on Railway
